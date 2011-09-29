@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+
+	<bean id="YubikeyService" class="eu.webteq.services.impl.YubikeyServiceImpl">
+		<property name="yubicoClient" ref="YubicoClient"/>
+		<property name="keyManager" ref="KeyManager"/>
+	</bean>
+
+	<!-- The Yubico verification client -->
+	<bean id="YubicoClient" class="com.yubico.client.v2.impl.YubicoClientImpl">
+		<!-- Client ID -->
+		<constructor-arg><value>6273</value></constructor-arg>
+		<property name="wsapiUrls">
+			<list>
+				<value>https://api.yubico.com/wsapi/2.0/verify</value>
+				<!--
+				<value>https://api2.yubico.com/wsapi/2.0/verify</value>
+				<value>https://api3.yubico.com/wsapi/2.0/verify</value>
+				<value>https://api4.yubico.com/wsapi/2.0/verify</value>
+				<value>https://api5.yubico.com/wsapi/2.0/verify</value>
+				-->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="KeyManager" class="eu.webteq.services.impl.KeyManagerImpl">
+		<constructor-arg><value>/tmp/keydb</value></constructor-arg>
+	</bean>
+
+</beans>
