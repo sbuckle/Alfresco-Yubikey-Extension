@@ -10,12 +10,18 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import org.alfresco.repo.web.scripts.bean.Login;
 
-import com.yubico.client.v2.YubicoClient;
 import com.yubico.client.v2.YubicoResponse;
 import com.yubico.client.v2.YubicoResponseStatus;
 
 import eu.webteq.services.YubikeyService;
 
+/**
+ * For some reason AbstractLoginBean, which is what we should be extending, 
+ * is package private.
+ * 
+ * @author Simon Buckle <simon@webteq.eu>
+ *
+ */
 public class YubicoLogin extends Login {
 	
 	private YubikeyService yubikeyService;
@@ -31,18 +37,28 @@ public class YubicoLogin extends Login {
 	@Override
 	protected Map<String, Object> executeImpl(WebScriptRequest req, Status status)
     {
-		Map<String, Object> result = super.executeImpl(req, status);
-		
-		// If the above call didn't throw an exception, then we are good
-		String otp = req.getParameter("otp");
-		if (otp == null || otp.length() == 0) {
-			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "OTP not specified");
-		}
-		
-		if (!yubikeyService.isOwner(req.getParameter("u"), YubicoClient.getPublicId(otp))) {
-        	throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Key does not match to user");
+        String username = req.getParameter("u");
+        if (username == null || username.length() == 0) {
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Username not specified");
+        }
+        
+        String password = req.getParameter("pw");
+        if (password == null) {
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Password not specified");
         }
 		
+        // Extract the OTP from the password field.
+        String deviceid = yubikeyService.getDevice(username);
+        int idx = password.indexOf(deviceid);
+        if (idx == -1) {
+        	// Either the user is using the wrong key or no OTP has been included
+        	throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Failed to extract OTP");
+        }
+        String otp = password.substring(idx);
+        
+        Map<String, Object> result = login(username, password.substring(0, idx));
+        
+		// If the above call didn't throw an exception, then we are good
 		YubicoResponse response = yubikeyService.verify(otp);
 		if (response == null || !YubicoResponseStatus.OK.equals(response.getStatus())) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Invalid OTP");

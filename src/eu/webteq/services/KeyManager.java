@@ -9,4 +9,5 @@ package eu.webteq.services;
 public interface KeyManager {
 
 	public boolean isOwner(String username, String deviceId);
+	public String getDevice(String username);
 }

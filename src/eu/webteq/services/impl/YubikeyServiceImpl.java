@@ -26,15 +26,17 @@ public class YubikeyServiceImpl implements YubikeyService {
 	public void setKeyManager(KeyManager keyManager) {
 		this.keymanager = keyManager;
 	}
-	
-	@Override
+
 	public YubicoResponse verify(String otp) {
 		return client.verify(otp); // Delegate
 	}
 
-	@Override
 	public boolean isOwner(String username, String deviceId) {
 		return keymanager.isOwner(username, deviceId); // Delegate
+	}
+	
+	public String getDevice(String username) {
+		return keymanager.getDevice(username);
 	}
 
 }

@@ -12,7 +12,6 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.yubico.client.v2.YubicoClient;
 import com.yubico.client.v2.YubicoResponse;
 import com.yubico.client.v2.YubicoResponseStatus;
 
@@ -33,21 +32,35 @@ public class YubicoLoginPost extends LoginPost {
 	@Override
 	protected Map<String, Object> executeImpl(WebScriptRequest req, Status status)
     {
-		Map<String, Object> result = super.executeImpl(req, status);
-		
         Content c = req.getContent();
+        if (c == null) {
+        	throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Missing POST body.");
+        }
+        
         JSONObject json;
         try {
             json = new JSONObject(c.getContent());
-            String otp = json.getString("otp");
-
-            if (otp == null || otp.length() == 0) {
-                throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "OTP not specified");
+            String username = json.getString("username");
+            String password = json.getString("password");
+            
+            if (username == null || username.length() == 0) {
+                throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Username not specified");
             }
-
-            if (!yubikeyService.isOwner(json.getString("username"), YubicoClient.getPublicId(otp))) {
-            	throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Key does not match to user");
+            
+            if (password == null) {
+                throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Password not specified");
             }
+            
+            // Extract the OTP from the password field.
+            String deviceid = yubikeyService.getDevice(username);
+            int idx = password.indexOf(deviceid);
+            if (idx == -1) {
+            	// Either the user is using the wrong key or no OTP has been included
+            	throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Failed to extract OTP");
+            }
+            String otp = password.substring(idx);
+            
+            Map<String, Object> result = login(username, password.substring(0, idx));
             
             YubicoResponse response = yubikeyService.verify(otp);
     		if (response == null || !YubicoResponseStatus.OK.equals(response.getStatus())) {

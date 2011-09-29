@@ -52,7 +52,15 @@ public class KeyManagerImpl implements KeyManager
 		}
 	}
 	
-	@Override
+	/**
+	 * Returns the id of user's key.
+	 * 
+	 * @return String 
+	 */
+	public String getDevice(String username) {
+		return usernameKeyMap.get(username);
+	}
+	
 	public boolean isOwner(String username, String deviceId) {
 		String id = usernameKeyMap.get(username);
 		if (id == null) return false;
