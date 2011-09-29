@@ -15,12 +15,10 @@
 		<property name="wsapiUrls">
 			<list>
 				<value>https://api.yubico.com/wsapi/2.0/verify</value>
-				<!--
 				<value>https://api2.yubico.com/wsapi/2.0/verify</value>
 				<value>https://api3.yubico.com/wsapi/2.0/verify</value>
 				<value>https://api4.yubico.com/wsapi/2.0/verify</value>
 				<value>https://api5.yubico.com/wsapi/2.0/verify</value>
-				-->
 			</list>
 		</property>
 	</bean>
