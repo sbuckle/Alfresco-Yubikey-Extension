@@ -5,6 +5,7 @@
 	<property name="project.dir" value="."/>
 	<property name="build.dir" value="${project.dir}/bin"/>
 	<property name="sdk.dir" value="/Users/simon/Projects/alfresco-community-sdk-3" />
+	<property name="src.dir" value="${project.dir}/src" />
     <property name="web.dir" value="${project.dir}/web" />
 	<property name="package.file.jar" value="${build.dir}/yubikey-login.jar"/>
     <property name="package.file.zip" value="${build.dir}/yubikey-login.zip"/>
@@ -19,9 +20,14 @@
       <mkdir dir="${build.dir}" />
       <javac classpathref="class.path" srcdir="${project.dir}/src" destdir="${build.dir}" includeantruntime="false" />
    </target>
-   
-	<target name="package-jar">
+	
+	<target name="package-jar" depends="compile">
         <delete file="${package.file.jar}" />
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>		
 		<jar destfile="${package.file.jar}">
 			<fileset dir="${build.dir}" excludes="*.zip"/>
 		</jar>
