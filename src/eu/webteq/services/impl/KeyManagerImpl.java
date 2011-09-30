@@ -13,8 +13,10 @@ import eu.webteq.services.KeyManager;
 
 /**
  * File-backed implementation of user/key map.
+ * Each entry should be on a separate line. Fields should be separated
+ * by a colon and be of the form "username:deviceid", e.g. admin:abcdefgh
  * 
- * @author simon@webteq.eu
+ * @author Simon Buckle <simon@webteq.eu>
  *
  */
 public class KeyManagerImpl implements KeyManager 

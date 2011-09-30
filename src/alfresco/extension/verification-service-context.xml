@@ -11,7 +11,10 @@
 	<!-- The Yubico verification client -->
 	<bean id="YubicoClient" class="com.yubico.client.v2.impl.YubicoClientImpl">
 		<!-- Client ID -->
-		<constructor-arg><value>6273</value></constructor-arg>
+		<constructor-arg><value>12345678</value></constructor-arg>
+		<!-- Key (optional) 
+		<property name="key"><value>FOO=</value></property>
+		-->
 		<property name="wsapiUrls">
 			<list>
 				<value>https://api.yubico.com/wsapi/2.0/verify</value>
@@ -24,7 +27,8 @@
 	</bean>
 	
 	<bean id="KeyManager" class="eu.webteq.services.impl.KeyManagerImpl">
-		<constructor-arg><value>/tmp/keydb</value></constructor-arg>
+		<!-- The path to the key database -->
+		<constructor-arg><value>/etc/keydb</value></constructor-arg>
 	</bean>
 
 </beans>
