@@ -30,5 +30,14 @@
 		<!-- The path to the key database -->
 		<constructor-arg><value>/etc/keydb</value></constructor-arg>
 	</bean>
-
+	
+	<!-- 
+	<bean id="AlfrescoKeyManager" class="eu.webteq.services.impl.AlfrescoKeyManagerImpl">
+		<property name="contentService" ref="ContentService" />
+		<property name="fileFolderService" ref="FileFolderService" />
+		<property name="nodeService" ref="NodeService" />
+		<property name="path"><value>key.db</value></property>
+		<property name="searchService" ref="SearchService" />
+	</bean>
+	-->
 </beans>
