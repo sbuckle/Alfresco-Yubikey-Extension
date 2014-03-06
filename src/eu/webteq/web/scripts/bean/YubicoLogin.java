@@ -65,6 +65,10 @@ public class YubicoLogin extends Login {
 		
         // Extract the OTP from the password field.
         String deviceid = yubikeyService.getDevice(username);
+        if (deviceid == null || deviceid.length() == 0) {
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "No device id");
+        }
+        
         int idx = password.indexOf(deviceid);
         if (idx == -1) {
         	// Either the user is using the wrong key or no OTP has been included
