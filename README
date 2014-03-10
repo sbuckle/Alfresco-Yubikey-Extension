@@ -29,6 +29,12 @@ Copy alfresco.war to the root directory of the extension and run: ant integrate-
 The alternative is to run: ant package-extension. 
 This will produce a zip file. To deploy it, extract the contents of the zip file to the root directory of the deployed Alfresco instance.
 
+To build an AMP file run: ant package-amp
+
+To install it, run the following command: java -jar $ALF_HOME/bin/alfresco-mmt.jar install yubikey-login.amp $TOMCAT_HOME/webapps/alfresco.war -force
+
+You have to use -force because it overrides faces-config-custom.xml in /WEB-INF.
+
 Note
 ----
 
