@@ -5,12 +5,14 @@
 	<property name="project.dir" value="."/>
 	<property name="build.amp.dir" value="${project.dir}/bin/amp"/>
 	<property name="build.dir" value="${project.dir}/bin"/>
+	<property name="build.compile.dir" value="${build.dir}/classes"/>
+	<property name="dist.dir" value="${build.dir}/dist"/>
 	<property name="sdk.dir" value="/Users/simon/Projects/alfresco-community-sdk-3" />
 	<property name="src.dir" value="${project.dir}/src" />
     <property name="web.dir" value="${project.dir}/web" />
-    <property name="package.file.amp" value="${build.dir}/yubikey-login.amp" />
-	<property name="package.file.jar" value="${build.dir}/yubikey-login.jar"/>
-    <property name="package.file.zip" value="${build.dir}/yubikey-login.zip"/>
+    <property name="amp.file" value="yubikey-login.amp" />
+	<property name="jar.file" value="yubikey-login.jar"/>
+    <property name="zip.file" value="yubikey-login.zip"/>
 	<property name="amp.file.properties" value="module.properties" />
     <property name="amp.file.mappings" value="file-mapping.properties" />
    
@@ -20,27 +22,35 @@
       <fileset dir="${web.dir}/WEB-INF/lib" includes="**/*.jar"/>
    </path>
    
+   <target name="clean">
+       <delete dir="${build.dir}" />
+       <delete dir="${dist.dir}" />
+   </target>
+   
+   <target name="prepare">
+       <mkdir dir="${build.dir}" />
+       <mkdir dir="${dist.dir}" />
+    </target>
+   
    <target name="compile">
-      <mkdir dir="${build.dir}" />
-      <javac classpathref="class.path" srcdir="${project.dir}/src" destdir="${build.dir}" includeantruntime="false" />
+      <mkdir dir="${build.compile.dir}" />
+      <javac classpathref="class.path" srcdir="${project.dir}/src" destdir="${build.compile.dir}" includeantruntime="false" />
    </target>
 	
 	<target name="package-jar" depends="compile">
-        <delete file="${package.file.jar}" />
-		<copy todir="${build.dir}">
+		<copy todir="${build.compile.dir}">
 			<fileset dir="${src.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>		
-		<jar destfile="${package.file.jar}">
-			<fileset dir="${build.dir}" excludes="*.zip"/>
+		<jar destfile="${build.dir}/${jar.file}">
+			<fileset dir="${build.compile.dir}" />
 		</jar>
 	</target>
    
-   <target name="package-extension" depends="package-jar">
-      <delete file="${package.file.zip}" />
-      <zip destfile="${package.file.zip}">
-         <zipfileset file="${package.file.jar}" prefix="WEB-INF/lib" />
+   <target name="package-extension" depends="clean, prepare, package-jar">
+      <zip destfile="${dist.dir}/${zip.file}">
+         <zipfileset file="${build.dir}/${jar.file}" prefix="WEB-INF/lib" />
          <zipfileset dir="${web.dir}" />
       </zip>
    </target>
@@ -50,12 +60,12 @@
       <fail unless="alfresco.war.present"
             message="Could not find alfresco.war, please copy it to ${basedir}" />
       <zip destfile="alfresco.war" update="true">
-         <zipfileset file="${package.file.jar}" prefix="WEB-INF/lib" />
+         <zipfileset file="${build.dir}/${jar.file}" prefix="WEB-INF/lib" />
          <zipfileset dir="${web.dir}" />
       </zip>
    </target>
    
-   <target name="build-amp">
+   <target name="build-amp" depends="package-jar">
        <copy todir="${build.amp.dir}" file="${amp.file.properties}" failonerror="true" />
        <copy todir="${build.amp.dir}" file="${amp.file.mappings}" failonerror="false" />
        
@@ -69,14 +79,14 @@
        
        <mkdir dir="${build.amp.dir}/lib"/>
        <copy todir="${build.amp.dir}/lib">
-           <file file="${package.file.jar}"/>
+           <file file="${build.dir}/${jar.file}"/>
            <fileset dir="${web.dir}/WEB-INF/lib" includes="**/*.jar"/>
        </copy>
    </target>
    
    <!-- Build the AMP file -->
-   <target name="package-amp" depends="package-jar, build-amp">
-       <zip destfile="${package.file.amp}">
+   <target name="package-amp" depends="clean, prepare, build-amp">
+       <zip destfile="${dist.dir}/${amp.file}">
            <fileset dir="${build.amp.dir}" />
        </zip>
    </target>
