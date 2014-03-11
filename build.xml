@@ -82,7 +82,7 @@
         </zip>
     </target>
 
-    <target name="integrate-extension" depends="package-extension">
+    <target name="integrate-extension" depends="clean, prepare, package-jar">
         <available file="alfresco.war" type="file" property="alfresco.war.present" />
         <fail unless="alfresco.war.present"
             message="Could not find alfresco.war, please copy it to ${basedir}" />
