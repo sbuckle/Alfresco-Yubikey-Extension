@@ -1,9 +1,0 @@
-<alfresco-config>
-
-   <config>
-      <client>
-         <login-page>/jsp/extension/webteq/login.jsp</login-page>
-      </client>
-   </config>
-
-</alfresco-config>

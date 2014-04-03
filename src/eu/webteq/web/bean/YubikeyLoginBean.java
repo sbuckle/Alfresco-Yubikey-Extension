@@ -58,12 +58,15 @@ public class YubikeyLoginBean extends LoginBean
 	@Override
 	public String login()
 	{
+	    extractOtp();
+	    if (this.getOtp() == null) return null;
+	    
 		String outcome = super.login();
 		if (outcome == null) return null; // Only check the OTP if regular authentication succeeds first
 		
 	    if (yubikeyService.isOwner(this.getUsername(), 
 	    		YubicoClient.getPublicId(this.getOtp()))) {
-	    	YubicoResponse response = yubikeyService.verify(otp);
+	    	YubicoResponse response = yubikeyService.verify(this.getOtp());
 		    if (response != null) {
 		    	if (YubicoResponseStatus.OK.equals(response.getStatus())) {
 		    		return outcome;
@@ -74,6 +77,20 @@ public class YubikeyLoginBean extends LoginBean
 	    }
 	    
 	    return null;
+	}
+	
+	private void extractOtp()
+	{
+	    // Extract the OTP from the password field.
+	    String password = this.getPassword();
+        String deviceid = yubikeyService.getDevice(this.getUsername());
+        if (deviceid != null && deviceid.length() > 0) {
+            int idx = password.indexOf(deviceid);
+            if (idx > 0) {
+                this.setOtp(password.substring(idx));
+                this.setPassword(password.substring(0, idx));
+            }
+        }
 	}
 	
 }
