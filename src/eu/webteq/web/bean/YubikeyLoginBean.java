@@ -64,10 +64,8 @@ public class YubikeyLoginBean extends LoginBean
 	    if (yubikeyService.isOwner(this.getUsername(), 
 	    		YubicoClient.getPublicId(this.getOtp()))) {
 	    	YubicoResponse response = yubikeyService.verify(otp);
-		    if (response != null) {
-		    	if (YubicoResponseStatus.OK.equals(response.getStatus())) {
-		    		return outcome;
-		    	}
+		    if (response != null && response.getStatus() == YubicoResponseStatus.OK) {
+		        return outcome;
 		    }
 	    } else {
 	    	logger.info("User does not own device");

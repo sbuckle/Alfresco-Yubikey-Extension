@@ -83,7 +83,7 @@ public class YubicoLoginPost extends LoginPost {
             Map<String, Object> result = login(username, password.substring(0, idx));
             
             YubicoResponse response = yubikeyService.verify(otp);
-    		if (response == null || !YubicoResponseStatus.OK.equals(response.getStatus())) {
+    		if (response == null || response.getStatus() != YubicoResponseStatus.OK) {
     			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Invalid OTP");
     		}
             

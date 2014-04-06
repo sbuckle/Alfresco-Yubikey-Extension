@@ -80,7 +80,7 @@ public class YubicoLogin extends Login {
         
 		// If the above call didn't throw an exception, then we are good
 		YubicoResponse response = yubikeyService.verify(otp);
-		if (response == null || !YubicoResponseStatus.OK.equals(response.getStatus())) {
+		if (response == null || response.getStatus() != YubicoResponseStatus.OK) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Invalid OTP");
 		}
 		
