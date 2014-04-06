@@ -13,8 +13,6 @@ By default, Yubico's validation servers are used to validate the OTPs generated 
 
 If you are using your own validation servers then the default validation server URLs will also need to be changed.
 
-By default, login (using a key) via Share is disabled. To enable it, uncomment the bean definitions in alfresco/extension/custom-web-context.xml.
-
 For robustness, each username needs to be mapped to a key. The default implementation looks for a mapping file /etc/keydb.
 Each entry in the file should be on a separate line and fields should be separated by ":".
 Each entry should map the username to the device id, e.g. admin:abcdefghi. 
