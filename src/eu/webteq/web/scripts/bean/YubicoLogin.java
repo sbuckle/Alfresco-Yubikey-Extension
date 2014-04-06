@@ -26,6 +26,7 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import org.alfresco.repo.web.scripts.bean.Login;
 
+import com.yubico.client.v2.YubicoClient;
 import com.yubico.client.v2.YubicoResponse;
 import com.yubico.client.v2.YubicoResponseStatus;
 
@@ -76,14 +77,15 @@ public class YubicoLogin extends Login {
         }
         String otp = password.substring(idx);
         
-        Map<String, Object> result = login(username, password.substring(0, idx));
+        if (!yubikeyService.isOwner(username, YubicoClient.getPublicId(otp))) {
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "User does not own this device");
+        }
         
-		// If the above call didn't throw an exception, then we are good
-		YubicoResponse response = yubikeyService.verify(otp);
-		if (response == null || response.getStatus() != YubicoResponseStatus.OK) {
-			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Invalid OTP");
-		}
+        YubicoResponse response = yubikeyService.verify(otp);
+        if (response == null || response.getStatus() != YubicoResponseStatus.OK) {
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Invalid OTP");
+        }
 		
-        return result;
+        return login(username, password.substring(0, idx));
     }
 }
