@@ -61,17 +61,12 @@ public class YubikeyLoginBean extends LoginBean
 	    extractOtp();
 	    if (this.getOtp() == null) return null;
 	    
-		String outcome = super.login();
-		if (outcome == null) return null; // Only check the OTP if regular authentication succeeds first
-		
 	    if (yubikeyService.isOwner(this.getUsername(), 
 	    		YubicoClient.getPublicId(this.getOtp()))) {
-	    	YubicoResponse response = yubikeyService.verify(this.getOtp());
-		    if (response != null) {
-		    	if (YubicoResponseStatus.OK.equals(response.getStatus())) {
-		    		return outcome;
-		    	}
-		    }
+	    	YubicoResponse response = yubikeyService.verify(otp);
+	    	if (response != null && response.getStatus() == YubicoResponseStatus.OK) {
+	    	    return super.login();
+	    	}
 	    } else {
 	    	logger.info("User does not own device");
 	    }

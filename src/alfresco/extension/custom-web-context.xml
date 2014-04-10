@@ -3,8 +3,7 @@
 
 <beans>
 
-	<!-- Override the defaults -->
-	<!-- 
+	<!-- Override the defaults --> 
 	<bean id="webscript.org.alfresco.repository.login.get" class="eu.webteq.web.scripts.bean.YubicoLogin" parent="webscript">
       <property name="authenticationService" ref="AuthenticationService" />
       <property name="yubikeyService" ref="YubikeyService" />
@@ -14,5 +13,5 @@
       <property name="authenticationService" ref="AuthenticationService" />
       <property name="yubikeyService" ref="YubikeyService" />
    	</bean>
-   	-->
+
 </beans>

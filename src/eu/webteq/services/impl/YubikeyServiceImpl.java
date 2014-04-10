@@ -44,7 +44,11 @@ public class YubikeyServiceImpl implements YubikeyService {
 	}
 
 	public YubicoResponse verify(String otp) {
-		return client.verify(otp); // Delegate
+	    try {
+	        return client.verify(otp); // Delegate
+	    } catch (Exception e) {
+	        return null;
+	    }
 	}
 
 	public boolean isOwner(String username, String deviceId) {
