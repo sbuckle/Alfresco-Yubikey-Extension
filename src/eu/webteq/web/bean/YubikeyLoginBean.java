@@ -33,7 +33,7 @@ public class YubikeyLoginBean extends LoginBean
 	private static final Log logger = LogFactory.getLog(YubikeyLoginBean.class);
 	/** OTP **/
 	private String otp = null;
-	private YubikeyService yubikeyService;
+	private transient YubikeyService yubikeyService;
 	
 	public YubikeyService getYubikeyService()
 	{
