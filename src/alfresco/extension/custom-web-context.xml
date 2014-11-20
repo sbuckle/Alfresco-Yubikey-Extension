@@ -7,11 +7,13 @@
 	<bean id="webscript.org.alfresco.repository.login.get" class="eu.webteq.web.scripts.bean.YubicoLogin" parent="webscript">
       <property name="authenticationService" ref="AuthenticationService" />
       <property name="yubikeyService" ref="YubikeyService" />
+      <property name="eventPublisher" ref="eventPublisher" />
    	</bean>
    
    	<bean id="webscript.org.alfresco.repository.login.post" class="eu.webteq.web.scripts.bean.YubicoLoginPost" parent="webscript">
       <property name="authenticationService" ref="AuthenticationService" />
       <property name="yubikeyService" ref="YubikeyService" />
+      <property name="eventPublisher" ref="eventPublisher" />
    	</bean>
 
 </beans>
